@@ -1,0 +1,344 @@
+.face-tracking {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+/* !important defeats the inline pixel styles the XR8 engine writes onto the
+   canvas, which would otherwise let it overflow the container. */
+.face-tracking__canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.face-tracking__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  text-align: center;
+  padding: 24px;
+}
+
+.face-tracking__spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: face-tracking-spin 0.9s linear infinite;
+}
+
+@keyframes face-tracking-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.face-tracking__error-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.face-tracking__error-message {
+  max-width: 420px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.face-tracking__retry {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.face-tracking__retry:hover {
+  background: #e5e5e5;
+}
+
+.face-tracking__score-panel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 18px 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.06) 45%,
+    rgba(120, 180, 255, 0.1) 100%
+  );
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(14px);
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  pointer-events: none;
+  user-select: none;
+}
+
+.face-tracking__score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  transition: transform 0.2s ease;
+}
+
+.face-tracking__score.is-bump {
+  animation: score-bump 0.42s ease-out;
+}
+
+.face-tracking__score--lost .face-tracking__score-label {
+  color: rgba(255, 200, 200, 0.75);
+}
+
+.face-tracking__score--lost .face-tracking__score-value {
+  color: #ffd4d4;
+}
+
+@keyframes score-bump {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.face-tracking__score-bubbles {
+  position: absolute;
+  top: -6px;
+  left: 12px;
+  display: flex;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.face-tracking__score-bubbles span {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.9), rgba(120, 200, 255, 0.25) 55%, rgba(255, 120, 200, 0.15));
+  box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.face-tracking__score-bubbles span:nth-child(2) {
+  width: 7px;
+  height: 7px;
+  margin-top: 4px;
+  opacity: 0.85;
+}
+
+.face-tracking__score-bubbles span:nth-child(3) {
+  width: 6px;
+  height: 6px;
+  margin-top: 1px;
+  opacity: 0.7;
+}
+
+.face-tracking__score-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.face-tracking__score-value {
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.face-tracking__boom-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(255, 220, 120, 0.85), rgba(255, 80, 0, 0.55) 40%, transparent 70%);
+  pointer-events: none;
+  animation: boom-flash 1.2s ease-out forwards;
+}
+
+@keyframes boom-flash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.face-tracking__overlay--gameover {
+  background: rgba(20, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.face-tracking__gameover-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: #ff6633;
+  text-shadow: 0 0 24px rgba(255, 100, 0, 0.8);
+  letter-spacing: 0.04em;
+}
+
+.face-tracking__gameover-sub {
+  margin: 0;
+  font-size: 1.1rem;
+  color: rgba(255, 220, 200, 0.9);
+}
+
+.face-tracking__gameover-stats {
+  display: flex;
+  gap: 24px;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+
+.face-tracking__overlay--start {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(20, 10, 40, 0.72) 50%,
+    rgba(0, 0, 0, 0.65) 100%
+  );
+  backdrop-filter: blur(4px);
+  gap: 20px;
+}
+
+.face-tracking__title {
+  margin: 0;
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffd60a 40%, #4cc9f0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 4px 12px rgba(255, 100, 150, 0.35));
+}
+
+.face-tracking__tagline {
+  margin: 0;
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 500;
+}
+
+.face-tracking__instructions {
+  margin: 0;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+.face-tracking__start {
+  margin-top: 8px;
+  padding: 16px 52px;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff3b6a 0%, #9b5de5 50%, #4cc9f0 100%);
+  box-shadow:
+    0 8px 32px rgba(255, 59, 106, 0.45),
+    0 0 0 0 rgba(255, 59, 106, 0.5);
+  animation: start-pulse 2s ease-in-out infinite;
+}
+
+.face-tracking__start:hover {
+  transform: scale(1.04);
+  box-shadow:
+    0 12px 40px rgba(255, 59, 106, 0.55),
+    0 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+@keyframes start-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 8px 32px rgba(255, 59, 106, 0.45),
+      0 0 0 0 rgba(255, 59, 106, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 8px 32px rgba(155, 93, 229, 0.5),
+      0 0 0 12px rgba(255, 59, 106, 0);
+  }
+}
+
+.face-tracking__overlay--countdown {
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.face-tracking__countdown {
+  font-size: clamp(5rem, 22vw, 9rem);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  animation: countdown-pop 0.75s ease-out forwards;
+}
+
+.face-tracking__countdown.is-go {
+  font-size: clamp(3.5rem, 16vw, 6rem);
+  background: linear-gradient(135deg, #ffd60a, #ff6b35);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes countdown-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
